@@ -1,5 +1,4 @@
 package nl.wouterwally.afstuderen.backend;
-import com.google.gson.Gson;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,6 +15,9 @@ public class Main {
         static AtomicInteger counter = new AtomicInteger(0);
 
         public static void main(String[] args) {
+            // enable CORS for local testing.
+            enableCORS();
+
             // Demo routes
             get("/hello", (req, res) -> "Hello World");
             get( "/afstuderen", (req, res) -> "kei gek");
@@ -45,4 +47,29 @@ public class Main {
                 return message;
             }, new JsonTransformer());
         }
+
+    // Enables CORS on requests. This method is an initialization method and should be called once.
+    private static void enableCORS() {
+
+        options("/*", (request, response) -> {
+
+            String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
+
+            String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+            }
+
+            return "OK";
+        });
+
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "http://localhost:4200");
+            response.header("Access-Control-Request-Method", "GET,POST");
+            response.header("Access-Control-Allow-Headers", "");
+        });
+    }
 }

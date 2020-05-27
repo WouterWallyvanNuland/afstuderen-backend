@@ -32,7 +32,7 @@ public class Main {
                 res.status(200);
                 return message;
             }, new JsonTransformer());
-            
+
             get("/currentcounter", "application/json", (req, res) -> {
                 // Get current counter value
                 int currentValue = counter.intValue();
